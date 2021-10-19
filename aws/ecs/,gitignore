@@ -1,0 +1,5 @@
+# compiled file and directory to ignore 
+**/.terraform/
+**/.terraform.lock.hcl 
+*.tfstate 
+*.tfstate.backup
