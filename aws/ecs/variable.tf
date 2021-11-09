@@ -35,9 +35,9 @@ variable "fargate_memory" {
 }
 
 variable "container_port" {
-  type        = number 
+  type        = string
   description = "container port for the application"
-  default     = 3000
+  default     = ""
 }
 
 variable "delimiter" {
@@ -188,7 +188,7 @@ variable "task_mount_points" {
 variable "prevent_destroy" {
   type        = bool
   description = "S3 bucket lifecycle prevent destroy"
-  default     = true
+  default     = false
 }
 
 variable "bucket_prefix" {
@@ -239,17 +239,6 @@ variable "db_secret_arn" {
   default = ""
 }
 
-variable "rmkey_secret_arn" {
-  type        = string
-  description = "ARN to the Secret in Secret Manager for Rails Master Key"
-  default = ""
-}
-
-variable "admin_secret_arn" {
-  type        = string
-  description = "ARN to the Secret in Secret Manager for Admin Credentials"
-  default = ""
-}
 
 locals {
  
