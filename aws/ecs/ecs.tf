@@ -165,12 +165,20 @@ resource "aws_ecs_task_definition" "uclib_treatment_definition" {
       "valueFrom": "${var.db_secret_arn}:username::"
       },
       {
-      "name": "MLA_USERNAME",
-      "valueFrom": "${var.admin_secret_arn}:adminUserName::"
+      "name": "ENGINE",
+      "valueFrom": "${var.admin_secret_arn}:engine::"
       },
+       {
+      "name": "PORT",
+      "valueFrom": "${var.admin_secret_arn}:port::"
+      },
+       {
+      "name": "DB_INSTANCE_IDENTIFIER",
+      "valueFrom": "${var.admin_secret_arn}:dbInstanceIdentifier::"
+      },      
       {
       "name": "MLA_ADMIN_PASSWORD",
-      "valueFrom": "${var.admin_secret_arn}:adminPassword::"
+      "valueFrom": "${var.admin_secret_arn}:password::"
       }
     ],
     "volume": []
