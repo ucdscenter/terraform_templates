@@ -1,6 +1,6 @@
 #VPC 
 resource "aws_vpc" "dsc_vpc" {
-  cidr_block              = var.vpc_cidr 
+  cidr_block              = var.vpc-cidr 
   enable_dns_support      = true
   enable_dns_hostnames    = true
 
@@ -92,7 +92,7 @@ resource "aws_route_table_association" "private-subnet-association" {
 }
 
 # Public route 
-resource "aws_route".   "public_route" {
+resource "aws_route"   "public_route" {
   count                     = var.create ? 2:0 
   route_table_id            = aws_route_table.dsc_public_rtable[count.index].id
   destination_cidr_block    = "0.0.0.0/0"
