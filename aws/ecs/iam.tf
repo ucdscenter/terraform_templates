@@ -55,9 +55,7 @@ resource "aws_iam_policy" "ecs_fargate_policy" {
             "secretsmanager:GetSecretValue"
           ],
           "Resource": [
-            "${var.db_secret_arn}",
-            "${var.rmkey_secret_arn}",
-            "${var.admin_secret_arn}"
+            "${var.db_secret_arn}"
           ]
         }
    ]
@@ -72,7 +70,7 @@ resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy" {
 
 
 #Service role and policy 
-resource "aws_iam_role"  "treatment_db_svc" {
+resource "aws_iam_role"  "mla_svc" {
   name = "${var.name}-svc-role"
 
   assume_role_policy = <<EOF
@@ -92,7 +90,7 @@ resource "aws_iam_role"  "treatment_db_svc" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "treatment_svc_policy" {
-  role       = aws_iam_role.treatment_db_svc.name
+resource "aws_iam_role_policy_attachment" "mla_svc_policy" {
+  role       = aws_iam_role.mla_svc.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
 }
