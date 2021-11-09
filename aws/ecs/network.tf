@@ -12,7 +12,7 @@ resource "aws_vpc" "dsc_vpc" {
 #Private subnets
 resource "aws_subnet" "dsc_private_subnets" {
   count                   = var.create ? 2:0 
-  vpc_id                  = aws_vpc.mla_vpc.id
+  vpc_id                  = aws_vpc.dsc_vpc.id
   availability_zone       = var.azs[count.index]  
   cidr_block              = var.private_subnets_cidr[count.index]   
 
@@ -92,8 +92,8 @@ resource "aws_route_table_association" "private-subnet-association" {
 }
 
 # Public route 
-resource "aws_route" "public_route" {
-  count           = var.create ? 2:0 
+resource "aws_route".   "public_route" {
+  count                     = var.create ? 2:0 
   route_table_id            = aws_route_table.dsc_public_rtable[count.index].id
   destination_cidr_block    = "0.0.0.0/0"
   gateway_id                =  aws_internet_gateway.dsc_igw.id 
@@ -108,7 +108,7 @@ resource "aws_route" "private_route" {
 }
 
 # EIP 
-resource "aws_eip" "nat_eip" {
+resource "aws_eip"     "nat_eip" {
    vpc                       = true 
    #associate_with_private_ip = "10.0.0.5"
    depends_on                 = [aws_internet_gateway.dsc_igw]
