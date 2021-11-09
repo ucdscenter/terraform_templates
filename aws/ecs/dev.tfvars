@@ -1,5 +1,5 @@
 
-account_id                = "689243823134"
+account_id                = "049879149392"
 vpc-cidr                  = "10.0.0.0/16"
 create                    = true
 name                      = "learning_machines_app" 
