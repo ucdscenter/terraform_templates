@@ -1,8 +1,7 @@
-
-account_id                = "049879149392"
+account_id                = "689243823134"
 vpc-cidr                  = "10.0.0.0/16"
 create                    = true
-name                      = "learning_machines_app" 
+name                      = "learning-machines-app" 
 namespace                 = "ucdscenter"
 app_image                 = ""
 environment               = "machine-learning-app"
