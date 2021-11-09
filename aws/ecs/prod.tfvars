@@ -1,5 +1,7 @@
 account_id                = "049879149392"
-vpc-cidr                  = "192.168.0.0/20"
+vpc-cidr                  = "192.168.0.0/16"
+public_subnets_cidr       = ["192.168.5.0/24", "192.168.6.0/24" ]
+private_subnets_cidr      = ["192.168.7.0/24", "192.168.8.0/24" ]
 create                    = true
 name                      = "learning_machines_app" 
 namespace                 = "ucdscenter"
