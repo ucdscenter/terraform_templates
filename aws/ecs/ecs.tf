@@ -11,7 +11,7 @@ resource "aws_cloudwatch_log_stream" "dsc_lma_stream" {
 }
 
 #ALB 
-resource "aws_lb" "treatment_lb" {
+resource "aws_lb" "mla_lb" {
   name               = "${var.name}-lb"
   internal           = false
   load_balancer_type = "application"
@@ -22,7 +22,7 @@ resource "aws_lb" "treatment_lb" {
 }
 
 #ALB target group
-resource "aws_alb_target_group" "treat_alb_tg_group" {
+resource "aws_alb_target_group" "mla_alb_tg_group" {
   name         = "${var.name}-tg"
   port         = 80
 
@@ -39,20 +39,20 @@ resource "aws_alb_target_group" "treat_alb_tg_group" {
     unhealthy_threshold = "2"
   }
 
-  depends_on =  [ aws_lb.treatment_lb ]
+  depends_on =  [ aws_lb.mla_lb ]
 }
 
 resource "aws_alb_listener" "ecs_alb_http_listner" {
-  load_balancer_arn = aws_lb.treatment_lb.id
+  load_balancer_arn = aws_lb.mla_lb.id
   port              = 80
   protocol          = "HTTP"
 
   default_action {
     type = "forward"
-    target_group_arn = aws_alb_target_group.treat_alb_tg_group.arn
+    target_group_arn = aws_alb_target_group.mla_alb_tg_group.arn
   }
 
-  depends_on        = [ aws_alb_target_group.treat_alb_tg_group ]
+  depends_on        = [ aws_alb_target_group.mla_alb_tg_group ]
 }
 
 #Redirect traffic to target group
@@ -100,12 +100,12 @@ resource "aws_alb_listener" "ecs_alb_http_listner" {
 #}
 
 #ECS Cluster 
-resource "aws_ecs_cluster" "treatment_db_cluster" {
+resource "aws_ecs_cluster" "mla_cluster" {
   name = "${var.name}-cluster"
 }
 
 #ECS Task Definition 
-resource "aws_ecs_task_definition" "uclib_treatment_definition" {
+resource "aws_ecs_task_definition" "mla_definition" {
   count                    = var.create ? 1:0 
   family                   = "${var.name}-task"
   task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
@@ -166,19 +166,19 @@ resource "aws_ecs_task_definition" "uclib_treatment_definition" {
       },
       {
       "name": "ENGINE",
-      "valueFrom": "${var.admin_secret_arn}:engine::"
+      "valueFrom": "${var.db_secret_arn}:engine::"
       },
        {
       "name": "PORT",
-      "valueFrom": "${var.admin_secret_arn}:port::"
+      "valueFrom": "${var.db_secret_arn}:port::"
       },
        {
       "name": "DB_INSTANCE_IDENTIFIER",
-      "valueFrom": "${var.admin_secret_arn}:dbInstanceIdentifier::"
+      "valueFrom": "${var.db_secret_arn}:dbInstanceIdentifier::"
       },      
       {
       "name": "MLA_ADMIN_PASSWORD",
-      "valueFrom": "${var.admin_secret_arn}:password::"
+      "valueFrom": "${var.db_secret_arn}:password::"
       }
     ],
     "volume": []
@@ -188,10 +188,10 @@ EOF
 }
 
 #ECS Service 
-resource "aws_ecs_service" "uclib_treatment_db" {
+resource "aws_ecs_service" "mla_service" {
   name                               = "${var.name}-service" 
-  cluster                            = aws_ecs_cluster.treatment_db_cluster.id
-  task_definition                    = aws_ecs_task_definition.uclib_treatment_definition[0].arn
+  cluster                            = aws_ecs_cluster.mla_cluster.id
+  task_definition                    = aws_ecs_task_definition.mla_definition[0].arn
   desired_count                      = 1
   launch_type                        = "FARGATE" 
   scheduling_strategy                = "REPLICA"
@@ -199,8 +199,8 @@ resource "aws_ecs_service" "uclib_treatment_db" {
   deployment_minimum_healthy_percent = 50
   deployment_maximum_percent         = 200
   #health_check_grace_period_seconds  = 60   
-  #iam_role                           = aws_iam_role.treatment_db_svc.arn  
-  depends_on                         = [ aws_iam_role.treatment_db_svc ] 
+  #iam_role                           = aws_iam_role.mla_svc.arn  
+  depends_on                         = [ aws_iam_role.mla_svc ] 
 
   network_configuration {
     security_groups  = [ aws_security_group.alb.id, aws_security_group.service.id ]
@@ -209,7 +209,7 @@ resource "aws_ecs_service" "uclib_treatment_db" {
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.treat_alb_tg_group.arn
+    target_group_arn = aws_alb_target_group.mla_alb_tg_group.arn
     container_name   = "${local.environment_prefix}-app"
     container_port   = var.container_port
   }
