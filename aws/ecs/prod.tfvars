@@ -11,6 +11,6 @@ azs                       = ["us-east-2a" , "us-east-2b"]
 cloudwatch_log_group_name = "ecs/uc-machine-learning-app"
 cloudwatch_log_stream     = "ecs"
 bucket_name               = "ucdsc-lb-logs"
-container_port            =  
+container_port            =  "8000"
 name_prefix               = "ucdsc_center"
 db_secret_arn             = "arn:aws:secretsmanager:us-east-2:049879149392:secret:prod/machineLearningApp/postgres-OFEBTn"
