@@ -17,6 +17,21 @@ variable "vpc_id" {
   default     = ""
 }
 
+variable "vpc-cidr" {
+  type = string
+  default = ""
+}
+
+variable "public_subnets_cidr" {
+  type = list(string)
+  default =  [ "" ]
+}
+
+variable "private_subnets_cidr" {
+   type = list(string)
+   default =  [ "" ]
+}
+
 variable "app_image" {
   description = "Docker image of the application"
   default     = ""
@@ -49,6 +64,11 @@ variable "delimiter" {
 variable "az_count" {
   description = "Number of AZs to cover in a given region"
   default     = ""
+}
+
+variable "azs" {
+  type = list(string)
+  default = [ "" ]
 }
 
 variable "bucket_name" {
