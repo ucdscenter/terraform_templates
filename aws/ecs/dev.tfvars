@@ -14,6 +14,4 @@ cloudwatch_log_stream     = "ecs"
 bucket_name               = "ucdsc-lb-logs"
 container_port            =  
 name_prefix               = "ucdsc_centre"
-#db_secret_arn             = 
-#rmkey_secret_arn          = 
-#admin_secret_arn          = 
+db_secret_arn             = "arn:aws:secretsmanager:us-east-2:049879149392:secret:prod/machineLearningApp/postgres-OFEBTn"
