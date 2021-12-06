@@ -182,7 +182,48 @@ resource "aws_ecs_task_definition" "mla_definition" {
       }
     ],
     "volume": []
-  }
+  },
+  
+  {
+    "name": "nginx",
+    "image": "382622020541.dkr.ecr.us-east-2.amazonaws.com/nginx",
+    "cpu": 64,
+    "memoryReservation": 128,
+    "portMappings" : [
+      {
+        "hostPort": 80,
+        "containerPort": 80,
+        "protocol": "tcp"
+      }
+    ]
+  },  
+  
+  {
+    "name": "redis",
+    "image": "382622020541.dkr.ecr.us-east-2.amazonaws.com/redis",
+    "cpu": 64,
+    "memoryReservation": 128,
+    "portMappings" : [
+      {
+        "hostPort": 6379,
+        "containerPort": 6379,
+        "protocol": "tcp"
+      }
+    ]
+  },
+  {
+    "name": "uwsgi",
+    "image": "382622020541.dkr.ecr.us-east-2.amazonaws.com/uwsgi",
+    "cpu": 64,
+    "memoryReservation": 128,
+    "portMappings" : [
+      {
+        "hostPort": 6379,
+        "containerPort": 6379,
+        "protocol": "tcp"
+      }
+    ]
+  }  
 ]
 EOF
 }
