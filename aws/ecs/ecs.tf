@@ -218,8 +218,8 @@ resource "aws_ecs_task_definition" "mla_definition" {
     "memoryReservation": 128,
     "portMappings" : [
       {
-        "hostPort": 6379,
-        "containerPort": 6379,
+        "hostPort": 8001,
+        "containerPort": 8001,
         "protocol": "tcp"
       }
     ]
