@@ -18,18 +18,18 @@ variable "vpc_id" {
 }
 
 variable "vpc-cidr" {
-  type = string
+  type    = string
   default = ""
 }
 
 variable "public_subnets_cidr" {
-  type = list(string)
-  default =  [ "" ]
+  type    = list(string)
+  default = [""]
 }
 
 variable "private_subnets_cidr" {
-   type = list(string)
-   default =  [ "" ]
+  type    = list(string)
+  default = [""]
 }
 
 variable "app_image" {
@@ -38,13 +38,13 @@ variable "app_image" {
 }
 
 variable "fargate_cpu" {
-  type        = number 
+  type        = number
   description = "The cpu for the fargate container"
   default     = 64
 }
 
 variable "fargate_memory" {
-  type        = number 
+  type        = number
   description = "The memory for the fargate container"
   default     = 128
 }
@@ -67,8 +67,8 @@ variable "az_count" {
 }
 
 variable "azs" {
-  type = list(string)
-  default = [ "" ]
+  type    = list(string)
+  default = [""]
 }
 
 variable "bucket_name" {
@@ -165,13 +165,13 @@ variable "create_repository_credentials_iam_policy" {
 }
 
 variable "placement_constraints" {
-  type        = list
+  type        = list(any)
   description = "(Optional) A set of placement constraints rules that are taken into consideration during task placement. Maximum number of placement_constraints is 10. This is a list of maps, where each map should contain \"type\" and \"expression\""
   default     = []
 }
 
 variable "proxy_configuration" {
-  type        = list
+  type        = list(any)
   description = "(Optional) The proxy configuration details for the App Mesh proxy. This is a list of maps, where each map should contain \"container_name\", \"properties\" and \"type\""
   default     = []
 }
@@ -255,13 +255,19 @@ variable "health_check_path" {
 
 variable "db_secret_arn" {
   type        = string
-  description = "ARN to the Secret in Secret Manager for RDS"
-  default = ""
+  description = "ARN to the Secret in Secret Manager for pd RDS"
+  default     = ""
+}
+
+variable "dev_db_secret_arn" {
+  type        = string
+  description = "ARN to the Secret in Secret Manager for  dev RDS"
+  default     = ""
 }
 
 
 locals {
- 
+
   environment_prefix = join(var.delimiter, compact([var.namespace, var.environment]))
   stage_prefix       = join(var.delimiter, compact([local.environment_prefix, var.stage]))
   module_prefix      = join(var.delimiter, compact([local.stage_prefix, var.name]))
