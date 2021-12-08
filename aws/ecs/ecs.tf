@@ -71,34 +71,6 @@ resource "aws_alb_listener" "ecs_alb_http_listner" {
 #  }
 #}  
 
-#Autoscaling group 
-#resource "aws_appautoscaling_target" "ecs_target" {
-#  max_capacity       = 4
-#  min_capacity       = 2
-#  resource_id        = "service/${aws_ecs_cluster.treatment_db_cluster.name}/${aws_ecs_service.uclib_treatment_db.name}"
-#  scalable_dimension = "ecs:service:DesiredCount"
-#  service_namespace  = "ecs"
-#}
-
-#resource "aws_appautoscaling_policy" "ecs_policy" {
-#  name               = "scale-down"
-#  policy_type        = "StepScaling"
-#  resource_id        = "service/${aws_ecs_cluster.treatment_db_cluster.name}/${aws_ecs_service.uclib_treatment_db.name}"
-#  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
-#  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
-#
-#  step_scaling_policy_configuration {
-#    adjustment_type         = "ChangeInCapacity"
-#    cooldown                = 60
-#    metric_aggregation_type = "Maximum"
-#
-#    step_adjustment {
-#      metric_interval_upper_bound = 0
-#      scaling_adjustment          = -1
-#    }
-#  }
-#}
-
 #ECS Cluster 
 resource "aws_ecs_cluster" "mla_cluster" {
   name = "${var.name}-cluster"
@@ -118,7 +90,7 @@ resource "aws_ecs_task_definition" "uwsgi" {
 [
   {
     "image": "049879149392.dkr.ecr.us-east-2.amazonaws.com/uwsgi",
-    "name": "${local.environment_prefix}-uwsgi",
+    "name": "uwsgi",
     "essential": true,
     "cpu": 256,
     "memoryReservation": 512,
@@ -137,7 +109,7 @@ resource "aws_ecs_task_definition" "uwsgi" {
       "options": {
         "awslogs-region": "${var.aws_region}",
         "awslogs-group": "${var.cloudwatch_log_group_name}",
-        "awslogs-stream-prefix": "${var.cloudwatch_log_stream}"
+        "awslogs-stream-prefix": "${var.cloudwatch_log_stream}/uwsgi"
       }
     },
     "environment": [],
@@ -193,8 +165,8 @@ resource "aws_ecs_task_definition" "nginx" {
     "image": "049879149392.dkr.ecr.us-east-2.amazonaws.com/nginx",
     "name": "nginx",
     "essential": true,
-    "cpu": 512,
-    "memoryReservation": 1024,
+    "cpu": 256,
+    "memoryReservation": 512,
     "portMappings": [
       {
         "containerPort": 80,
@@ -210,7 +182,7 @@ resource "aws_ecs_task_definition" "nginx" {
       "options": {
         "awslogs-region": "${var.aws_region}",
         "awslogs-group": "${var.cloudwatch_log_group_name}",
-        "awslogs-stream-prefix": "${var.cloudwatch_log_stream}"
+        "awslogs-stream-prefix": "${var.cloudwatch_log_stream}/nginx"
       }
     },
     "environment": [],
@@ -254,7 +226,7 @@ resource "aws_ecs_task_definition" "redis" {
       "options": {
         "awslogs-region": "${var.aws_region}",
         "awslogs-group": "${var.cloudwatch_log_group_name}",
-        "awslogs-stream-prefix": "${var.cloudwatch_log_stream}"
+        "awslogs-stream-prefix": "${var.cloudwatch_log_stream}/redis"
       }
     },
     "environment": [],
@@ -281,8 +253,8 @@ resource "aws_ecs_task_definition" "worker" {
     "image": "049879149392.dkr.ecr.us-east-2.amazonaws.com/worker",
     "name": "worker",
     "essential": true,
-    "cpu": 512,
-    "memoryReservation": 1024,
+    "cpu": 256,
+    "memoryReservation": 512,
     "portMappings": [
       {
         "containerPort": 8001,
@@ -298,7 +270,7 @@ resource "aws_ecs_task_definition" "worker" {
       "options": {
         "awslogs-region": "${var.aws_region}",
         "awslogs-group": "${var.cloudwatch_log_group_name}",
-        "awslogs-stream-prefix": "${var.cloudwatch_log_stream}"
+        "awslogs-stream-prefix": "${var.cloudwatch_log_stream}/worker"
       }
     },
     "environment": [],
