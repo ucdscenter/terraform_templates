@@ -283,7 +283,13 @@ resource "aws_ecs_task_definition" "worker" {
     "essential": true,
     "cpu": 512,
     "memoryReservation": 1024,
-    "portMappings": [],
+    "portMappings": [
+      {
+        "containerPort": 8001,
+        "hostPort": 8001,
+        "protocol": "tcp"
+      }
+    ],
     "mountPoints": [],
     "entryPoint": [],
     "command": [],
@@ -441,4 +447,3 @@ resource "aws_ecs_service" "worker" {
   #  container_port   = 
   #}
 }
-
