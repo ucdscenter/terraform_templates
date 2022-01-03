@@ -38,6 +38,7 @@ resource "aws_iam_policy" "ecs_fargate_policy" {
               "ecr:BatchGetImage",
               "logs:CreateLogStream",
               "logs:PutLogEvents",
+              "secretsmanager:*",
               "ssm:GetParameter",
               "ssm:GetParameters",
               "ssm:GetParametersByPath",
