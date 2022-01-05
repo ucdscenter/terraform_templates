@@ -126,3 +126,4 @@ resource "aws_nat_gateway" "dsc_nat_gw" {
   }
 }
 
+
