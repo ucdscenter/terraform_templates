@@ -94,7 +94,7 @@ resource "aws_ecs_task_definition" "uwsgi" {
     "essential": true,
     "cpu": 256,
     "memoryReservation": 512,
-    "localhost": 6379,
+    "localhost": 80,
     "portMappings": [
       {
         "containerPort": 8001,
@@ -149,55 +149,12 @@ resource "aws_ecs_task_definition" "uwsgi" {
   },
 
   {
-    "image": "049879149392.dkr.ecr.us-east-2.amazonaws.com/redis",
-    "name": "redis",
-    "essential": true,
-    "cpu": 256,
-    "memoryReservation": 512,
-    "portMappings": [
-      {
-        "containerPort": 6379,
-        "hostPort": 6379,
-        "protocol": "tcp"
-      }
-    ],
-    "mountPoints": [],
-    "entryPoint": [],
-    "command": [],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-region": "${var.aws_region}",
-        "awslogs-group": "${var.cloudwatch_log_group_name}",
-        "awslogs-stream-prefix": "${var.cloudwatch_log_stream}/redis"
-      }
-    },
-    "environment": [],
-    "placement_constraints": [],
-    "secrets": [],
-    "volume": []
-  }
-]
-EOF
-}
-
-resource "aws_ecs_task_definition" "nginx" {
-  count                    = var.create ? 1 : 0
-  family                   = "${var.name}-nginx"
-  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  network_mode             = "awsvpc"
-  cpu                      = 1024
-  memory                   = 2048
-  requires_compatibilities = ["FARGATE"]
-  container_definitions    = <<EOF
-[
-  {
     "image": "049879149392.dkr.ecr.us-east-2.amazonaws.com/nginx",
     "name": "nginx",
     "essential": true,
     "cpu": 256,
     "memoryReservation": 512,
+    "localhost": 8001,
     "portMappings": [
       {
         "containerPort": 80,
@@ -220,22 +177,8 @@ resource "aws_ecs_task_definition" "nginx" {
     "placement_constraints": [],
     "secrets": [],
     "volume": []
-  }
-]
-EOF
-}
+  },
 
-resource "aws_ecs_task_definition" "worker" {
-  count                    = var.create ? 1 : 0
-  family                   = "${var.name}-worker"
-  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  network_mode             = "awsvpc"
-  cpu                      = 1024
-  memory                   = 2048
-  requires_compatibilities = ["FARGATE"]
-  container_definitions    = <<EOF
-[
   {
     "image": "049879149392.dkr.ecr.us-east-2.amazonaws.com/worker",
     "name": "worker",
@@ -319,6 +262,7 @@ resource "aws_ecs_task_definition" "worker" {
     "secrets": [],
     "volume": []
   }
+
 ]
 EOF
 }
@@ -346,61 +290,7 @@ resource "aws_ecs_service" "uwsgi" {
 
   #load_balancer {
   #  target_group_arn = aws_alb_target_group.mla_alb_tg_group.arn
-  #  container_name   = "uwsgi"
-  #  container_port   = "8001"            
-  #}
-}
-
-resource "aws_ecs_service" "nginx" {
-  name                               = "${var.name}-nginx"
-  cluster                            = aws_ecs_cluster.mla_cluster.id
-  task_definition                    = aws_ecs_task_definition.nginx[0].arn
-  desired_count                      = 1
-  launch_type                        = "FARGATE"
-  scheduling_strategy                = "REPLICA"
-  platform_version                   = "LATEST"
-  deployment_minimum_healthy_percent = 50
-  deployment_maximum_percent         = 200
-  #health_check_grace_period_seconds  = 60   
-  #iam_role                           = aws_iam_role.mla_svc.arn  
-  depends_on = [aws_iam_role.mla_svc]
-
-  network_configuration {
-    security_groups  = [aws_security_group.alb.id, aws_security_group.service.id]
-    subnets          = [aws_subnet.dsc_public_subnets[0].id, aws_subnet.dsc_public_subnets[1].id]
-    assign_public_ip = true
-  }
-
-  load_balancer {
-    target_group_arn = aws_alb_target_group.mla_alb_tg_group.arn
-    container_name   = "nginx"
-    container_port   = 80
-  }
-}
-
-resource "aws_ecs_service" "worker" {
-  name                               = "${var.name}-worker"
-  cluster                            = aws_ecs_cluster.mla_cluster.id
-  task_definition                    = aws_ecs_task_definition.worker[0].arn
-  desired_count                      = 1
-  launch_type                        = "FARGATE"
-  scheduling_strategy                = "REPLICA"
-  platform_version                   = "LATEST"
-  deployment_minimum_healthy_percent = 50
-  deployment_maximum_percent         = 200
-  #health_check_grace_period_seconds  = 60   
-  #iam_role                           = aws_iam_role.mla_svc.arn  
-  depends_on = [aws_iam_role.mla_svc]
-
-  network_configuration {
-    security_groups  = [aws_security_group.alb.id, aws_security_group.service.id]
-    subnets          = [aws_subnet.dsc_public_subnets[0].id, aws_subnet.dsc_public_subnets[1].id]
-    assign_public_ip = true
-  }
-
-  #load_balancer {
-  #  target_group_arn = aws_alb_target_group.mla_alb_tg_group.arn
-  #  container_name   = "${local.environment_prefix}-worker"
-  #  container_port   = 
+  #  container_name   = "nginx"
+  #  container_port   = "80"            
   #}
 }
