@@ -294,3 +294,5 @@ resource "aws_ecs_service" "uwsgi" {
   #  container_port   = "80"            
   #}
 }
+
+
