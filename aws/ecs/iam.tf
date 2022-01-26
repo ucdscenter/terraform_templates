@@ -32,6 +32,7 @@ resource "aws_iam_policy" "ecs_fargate_policy" {
           "Action": [
               "s3:*",
               "ecs:*",
+              "es:*",
               "ecr:GetAuthorizationToken",
               "ecr:BatchCheckLayerAvailability",
               "ecr:GetDownloadUrlForLayer",
