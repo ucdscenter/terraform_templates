@@ -1,2 +1,3 @@
 # terraform_templates
-repo for terraform templates
+
+This repository consist of different Terraform modules for provisioning and deploying production grade services in AWS.
