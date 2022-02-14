@@ -56,20 +56,20 @@ resource "aws_alb_listener" "ecs_alb_http_listner" {
 }
 
 #Redirect traffic to target group
-#resource "aws_alb_listener" "ecs_alb_https_listner" {
-#  load_balancer_arn = aws_lb.treatment_lb.id
-#  port              = 443
-#  protocol          = "HTTPS"
-#  depends_on        = [ aws_alb_target_group.treat_alb_tg_group ]
-#  ssl_policy        = "ELBSecurityPolicy-2016-08"
-#  certificate_arn   = ""
-#  
-#  default_action {
-#    target_group_arn = aws_alb_target_group.treat_alb_tg_group.id
-#    type             =  "forward"
-#
-#  }
-#}  
+resource "aws_alb_listener"  "ecs_alb_https_listner" {
+  load_balancer_arn = aws_lb.mla_lb.id
+  port              = 443
+  protocol          = "HTTPS"
+  depends_on        = [ aws_alb_target_group.mla_alb_tg_group ]
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:us-east-2:049879149392:certificate/5a2042d1-e6bc-402f-9afb-553eaad7a297"
+  
+  default_action {
+    target_group_arn = aws_alb_target_group.mla_alb_tg_group.arn
+    type             =  "forward"
+
+  }
+}  
 
 #ECS Cluster 
 resource "aws_ecs_cluster" "mla_cluster" {
