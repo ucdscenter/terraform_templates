@@ -203,31 +203,31 @@ resource "aws_ecs_task_definition" "uwsgi" {
     "secrets": [
       {
         "name": "MLA_DATABASE_HOST",
-        "valueFrom": "${var.dev_db_secret_arn}:host::"
+        "valueFrom": "${var.db_secret_arn}:host::"
       },
       {
-      "name": "MLA_DATABASE_USERNAME",
-      "valueFrom": "${var.dev_db_secret_arn}:username::"
+        "name": "MLA_DATABASE_USERNAME",
+        "valueFrom": "${var.db_secret_arn}:username::"
       },
       {
         "name": "MLA_DATABASE_NAME",
-        "valueFrom": "${var.dev_db_secret_arn}:rds_dbname::"
+        "valueFrom": "${var.db_secret_arn}:rds_dbname::"
       },
       {
-      "name": "ENGINE",
-      "valueFrom": "${var.dev_db_secret_arn}:engine::"
+        "name": "ENGINE",
+        "valueFrom": "${var.db_secret_arn}:engine::"
       },
       {
-      "name": "PORT",
-      "valueFrom": "${var.dev_db_secret_arn}:port::"
+        "name": "PORT",
+        "valueFrom": "${var.db_secret_arn}:port::"
       },
       {
-      "name": "DB_INSTANCE_IDENTIFIER",
-      "valueFrom": "${var.dev_db_secret_arn}:dbInstanceIdentifier::"
+        "name": "DB_INSTANCE_IDENTIFIER",
+        "valueFrom": "${var.db_secret_arn}:dbInstanceIdentifier::"
       },      
       {
-      "name": "MLA_ADMIN_PASSWORD",
-      "valueFrom": "${var.dev_db_secret_arn}:password::"
+        "name": "MLA_ADMIN_PASSWORD",
+        "valueFrom": "${var.db_secret_arn}:password::"
       }
     ],
     "volume": []
