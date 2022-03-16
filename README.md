@@ -33,9 +33,9 @@ Basic command to run when implementing Terraform:
   - workspace     Workspace management
   
   Examples:
-  terraform init 
-  terraform plan -var-file=dev.tfvars 
-  terraform apply -var-file=dev.tfvars 
-  terraform refresh -var-file=dev.tfvars
-  terraform destroy -var-file=dev.tfvars
+  - terraform init 
+  - terraform plan -var-file=dev.tfvars 
+  - terraform apply -var-file=dev.tfvars 
+  - terraform refresh -var-file=dev.tfvars
+  - terraform destroy -var-file=dev.tfvars
   
